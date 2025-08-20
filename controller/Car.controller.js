@@ -64,20 +64,35 @@ const deleteCar = async (req, res) => {
 };    
 
 const updateStatus = async (req, res) => {
-    try{
+    try {
+        console.log("Update Status of Car");
+        console.log("Request params:", req.params);
+        console.log("Request body:", req.body);
+
         const { id } = req.params;
         const { status } = req.body;
-        const car = await Car.findByIdAndUpdate(id,
-        { status }, { new: true });
-        if(!car) {
+
+        if (!status) {
+            return res.status(400).json({ message: "Status is required" });
+        }
+
+        const car = await Car.findByIdAndUpdate(
+            id,
+            { $set: { status } },
+            { new: true }
+        );
+
+        if (!car) {
             return res.status(404).json({ message: 'Car not found' });
         }
+
         res.status(200).json(car);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: error.message });
     }
-    catch(error){
-        res.status(400).json({ message: error.message });
-    }
-};    
+};
+
 
 
 const addPart = async (req,res) => {
@@ -96,35 +111,24 @@ const addPart = async (req,res) => {
     }
 };
 
-const removePart = async (req,res) =>{
-    try{
-        const { id, partId } = req.params;
-        const car = await Car.findById(id);
-        if (!car) {
-            return res.status(404).json({ message: 'Car not found' });
-        }
-        car.parts.id(partId).remove();
-        await car.save();
-        res.status(200).json(car);
-    }
-    catch(error){
-        res.status(400).json({ message: error.message });
-    }   
-};
 
-const getParts = async (req,res) => {
-    try{
+const getParts = async (req, res) => {
+    try {
         const { id } = req.params;
         const car = await Car.findById(id);
         if (!car) {
             return res.status(404).json({ message: 'Car not found' });
         }
-        res.status(200).json(car.parts.id(partId));
-    }
-    catch(error){
-        res.status(400).json({ message: error.message });
+        if (!car.parts || car.parts.length === 0) {
+            return res.status(200).json({ message: 'No parts found for this car', parts: [] });
+        }
+        res.status(200).json({ parts: car.parts });
+    } catch (error) {
+        console.error(error); 
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
 
 const getPartById = async (req,res) => {
     try{
@@ -141,52 +145,79 @@ const getPartById = async (req,res) => {
     }
 };
 
-const updatePart = async (req,res) => {
-    try{
-        const { id , partId } = req.params;
+const updatePart = async (req, res) => {
+    try {
+        console.log("Update Parts ");
+        const { id, partId } = req.params;
         const car = await Car.findById(id);
         if (!car) {
             return res.status(404).json({ message: 'Car not found' });
         }
-        const part = car.parts.findByIdAndUpdate(partId, req.body, { new: true });
+        const part = car.parts.id(partId);
+        if (!part) {
+            return res.status(404).json({ message: 'Part not found' });
+        }
+        const allowedFields = ['name', 'price'];
+        allowedFields.forEach(field => {
+            if (req.body[field] !== undefined) {
+                part[field] = req.body[field];
+            }
+        });
+        await car.save();
+        res.status(200).json({ message: 'Part updated successfully', part });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
+const deletePart = async (req, res) => {
+    try {
+        const { id, partId } = req.params;
+
+        const car = await Car.findById(id);
+        if (!car) {
+            return res.status(404).json({ message: 'Car not found' });
+        }
+
+        // Remove part using pull
+        const part = car.parts.id(partId);
+        if (!part) {
+            return res.status(404).json({ message: 'Part not found' });
+        }
+
+        car.parts.pull(partId); // This safely removes the subdocument
+        await car.save();
+
+        res.status(200).json({ message: 'Part deleted successfully', deletedPart: part });
+     }
+         catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+const updatePartStatus = async (req, res) => {
+    try {
+        const { id, partId } = req.params;
+        const car = await Car.findById(id);
+        if (!car) {
+            return res.status(404).json({ message: 'Car not found' });
+        }
+
+        const part = car.parts.id(partId);
+        if (!part) {
+            return res.status(404).json({ message: 'Part not found' });
+        }
+        if (req.body.status) part.status = req.body.status;
+        await car.save();
+
         res.status(200).json(part);
-    }
-    catch(error){
+    } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
 
-const deletePart = async (req,res) => {
-    try{
-        const { id , partId } = req.params;
-        const car = await Car.findById(id);
-        if (!car) {
-            return res.status(404).json({ message: 'Car not found' });
-        }
-        car.parts.id(partId).remove();
-        await car.save();
-        res.status(200).json(car);
-    }
-    catch(error){
-        res.status(400).json({ message: error.message });
-    }
-};
-
-const updatePartStatus = async (req,res) => {
-    try{
-        const { id , partId } = req.params;
-        const car = await Car.findById(id);
-        if (!car) {
-            return res.status(404).json({ message: 'Car not found' });
-        }
-        car.parts.findByIdAndUpdate(partId, req.body, { new: true });
-        await car.save();
-        res.status(200).json(car);
-    }
-    catch(error){
-        res.status(400).json({ message: error.message });
-    }
-};
 
 module.exports = {
     createCar,
