@@ -1,27 +1,28 @@
 const mongoose = require('mongoose');
+const PartSchema = require('../schema/Parts.schema.js'); 
 
-const CarSchema = mongoose.Schema({
-    noPlate:{
-        type : String,
-        required : [true, "Nnumber Plate is required"]
+const CarSchema = new mongoose.Schema({
+    noPlate: {
+        type: String,
+        required: [true, "Number Plate is required"]
     },
-    carModel:{
-        type : String,
-        required : [true, "Car Model is required"]
+    carModel: {
+        type: String,
+        required: [true, "Car Model is required"]
     },
-    carBrand:{
-        type : String,
-        required : [true, "Car Brand is required"]
+    carBrand: {
+        type: String,
+        required: [true, "Car Brand is required"]
     },
-    carStatus:{
-        type : String,
-        default : "Pending"
-    }
-},
-    {
-        timestamps: true,
-    }
-);
+    carStatus: {
+        type: String,
+        default: "Pending"
+    },
+    parts: [PartSchema] 
+}, {
+    timestamps: true,
+});
 
-const Car = mongoose.model('Car', CarSchema);
-module.exports = Car;    
+const Car = mongoose.model("Car", CarSchema);
+module.exports = Car;
+

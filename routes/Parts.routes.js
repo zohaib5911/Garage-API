@@ -1,4 +1,3 @@
-const Parts = require("../models/Parts.model.js");
 const express = require('express'); 
 const routes = express.Router();
 const partsController = require("../controller/Parts.contoller.js");

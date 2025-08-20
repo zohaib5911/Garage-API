@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Parts = require("../models/Parts.model");
+const Parts = require("../models/Parts.model.js");
 
 const createPart = async (req, res) => {
     try {
