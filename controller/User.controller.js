@@ -92,11 +92,211 @@ const verifyLogin = async (req,res)=>{
         res.status(500).json({message : error.message });
     }
 };
+// For Cars controller
+const addCar = async (req,res) => {
+    try{
+        console.log(req.body);
+        const { id } = req.params;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message :" User Not Found!"});
+        }
+        if(!user.cars) {
+            user.cars = [];
+        }
+        user.cars.push(req.body);
+        await user.save();
+        console.log("New Car Added!");
+        res.status(200).json({user});
+    }
+    catch(error){
+        res.status(500).json({message : error.message });
+    }
+};
+const getCars = async (req,res) => {
+    try{
+        const { id } = req.params;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message :" User Not Found!"});
+        }
+        console.log("User Cars Sent!");
+        res.status(200).json({cars: user.cars});
+    }
+    catch(error){
+        res.status(500).json({message : error.message });
+    }
+};
+
+const getCarById = async (req,res) => {
+    try{
+        const { id, carId } = req.params;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message :" User Not Found!"});
+        }
+        const car = user.cars.id(carId);
+        if(!car){
+            console.log(car,"Available Cars");
+            return res.status(404).json({message :" Car Not Found!"});
+        }
+        console.log("Car Sent!");
+        res.status(200).json({car});
+    }
+    catch(error){
+        res.status(500).json({message : error.message });
+    }
+};
+
+const  updateCar = async (req,res) => {
+    try{
+        const { id, carId } = req.params;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message :" User Not Found!"});
+        }
+        const car = user.cars.id(carId);
+        if(!car){
+            return res.status(404).json({message :" Car Not Found!"});
+        }
+        Object.assign(car, req.body);
+        await user.save();
+        console.log("Car Updated!");
+        res.status(200).json({car});
+    }
+    catch(error){
+        res.status(500).json({message : error.message });
+    }
+};
+
+const getParts = async (req, res) => {
+    try{
+        const { id ,carId } = req.params;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message :" User Not Found!"});
+        }
+        const car = user.cars.id(carId);
+        if(!car){
+            return res.status(404).json({message :" Car Not Found!"});
+        }
+        console.log("User Parts Sent!");
+        res.status(200).json({parts: car.parts});
+    }
+    catch(error){
+        res.status(500).json({message : error.message });
+    }
+};
+
+const addPart = async (req, res) => {
+    try{
+        const { id ,carId } = req.params;
+        const newPart = req.body;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message :" User Not Found!"});
+        }
+        const car = user.cars.id(carId);
+        if(!car){
+            return res.status(404).json({message :" Car Not Found!"});
+        }
+        car.parts.push(newPart);
+        console.log(car.parts);
+        console.log();
+        console.log(newPart);
+        await user.save();
+        console.log("New Part Added!");
+        res.status(200).json({user});
+    }
+    catch(error){
+        res.status(500).json({message : error.message });
+    }
+};
+
+const getPartById = async (req, res) => {
+    try{
+        const { id, carId, partId } = req.params;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message :" User Not Found!"});
+        }
+        const car = user.cars.id(carId);
+        if(!car){
+            return res.status(404).json({message :" Car Not Found!"});
+        }
+        const part = car.parts.id(partId);
+        if(!part){
+            return res.status(404).json({message :" Part Not Found!"});
+        }
+        console.log("Part Sent!");
+        res.status(200).json({part});
+    }
+    catch(error){
+        res.status(500).json({message : error.message });
+    }
+};
+
+const updatePart = async (req, res) => {
+    try{
+        const { id, carId, partId } = req.params;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message :" User Not Found!"});
+        }
+        const car = user.cars.id(carId);
+        if(!car){
+            return res.status(404).json({message :" Car Not Found!"});
+        }
+        const part = car.parts.id(partId);
+        if(!part){
+            return res.status(404).json({message :" Part Not Found!"});
+        }
+        Object.assign(part, req.body);
+        await user.save();
+        console.log("Part Updated!");
+        res.status(200).json({part});
+    }
+    catch(error){
+        res.status(500).json({message : error.message });
+    }
+};
+
+
+const searchUser = async (req,res)=>{
+    try{
+        if(!req.body){
+            return res.status(404).json({message :" ID is required!"});
+        }
+        const { id  } = req.body;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message :" User Not Found!"});
+        }        
+        console.log(id," User Sent!");
+        res.status(200).json({user});
+    }
+    catch(error){
+        res.status(500).json({message : error.message });
+    }
+};
+
 module.exports = {
     deleteUser,
     regester,
     getAll,
     getID,
     updateUser,
-    verifyLogin
+    verifyLogin,
+
+    searchUser,
+
+    // car
+    addCar,
+    getCarById,
+    updateCar,
+    getCars,
+    getParts,
+    addPart,
+    getPartById,
+    updatePart
 };

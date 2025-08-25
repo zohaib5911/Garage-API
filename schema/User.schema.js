@@ -1,27 +1,34 @@
-const mongoose = require('mongoose');
-const PartSchema = require('../schema/Parts.schema.js'); 
+const mongoose = require('mongoose');   
+const CarSchema = require('../schema/Car.schema.js');   
 
-const CarSchema = new mongoose.Schema({
-    noPlate: {
-        type: String,
-        required: [true, "Number Plate is required"]
+const UserShema = mongoose.Schema({
+    name:{
+        type : String,
+        required: [true, "Name is required"]
     },
-    carModel: {
+    email:{
         type: String,
-        required: [true, "Car Model is required"]
+        required: [true, "Email is required"],
+        unique: true
     },
-    carBrand: {
-        type: String,
-        required: [true, "Car Brand is required"]
-    },
-    carStatus: {
-        type: String,
-        default: "Pending"
-    },
-    parts: [PartSchema] 
-}, {
-    timestamps: true,
-});
-
-module.exports = CarSchema;
-
+    password: {
+    type: String,
+    required: [true, "Password is required"],
+    minlength: [8, "Password must be at least 8 characters long"],
+    validate: {
+        validator: function(v) {
+            return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v);
+        },
+        message: props => `Password is not strong enough`
+    }
+  }, cars:{
+        type: [CarSchema],
+        default: [],
+        required: false
+    }
+},
+{
+  timestamps: true,
+}
+);
+module.exports = mongoose.model('User',UserShema);

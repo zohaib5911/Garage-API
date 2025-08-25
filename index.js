@@ -16,8 +16,8 @@ app.use(express.urlencoded({extended : true}));
 
 // using routes 
 app.use ('/api/user',userRoutes);
-app.use('/api/parts', partsRoutes);
-app.use('/api/cars',carRoutes);
+// app.use('/api/parts', partsRoutes);
+// app.use('/api/cars',carRoutes);
 
 app.get('/',(req,res)=>{
     res.send("Welcome to the Garage API")
