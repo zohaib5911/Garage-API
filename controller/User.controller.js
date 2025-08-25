@@ -12,7 +12,7 @@ const regester = async (req,res)=>{
     }
 };
 
-const getAll = async (req,res)=>{
+const getAll = async (req , res)=>{
     try{
         const user = await User.find({});
         console.log("All User Sent!");
@@ -25,7 +25,7 @@ const getAll = async (req,res)=>{
 
 const getID = async (req,res)=>{
     try{
-        const { id } = req.params;
+        const { id } = req.body;
         const user = await User.findById(id);
         if(!user){
             return res.status(404).json({message :" User Not Found!"});
@@ -40,7 +40,7 @@ const getID = async (req,res)=>{
 
 const updateUser = async (req,res)=>{
     try{
-        const { id } = req.params;
+        const { id } = req.body;
         const user = await User.findByIdAndUpdate(id,
             {$set : req.body},
             { new : true , runValidators : true }
@@ -59,7 +59,7 @@ const updateUser = async (req,res)=>{
 
 const deleteUser = async (req,res)=>{
     try{
-        const { id } = req.params;
+        const { id } = req.body;
         const user = await User.findByIdAndDelete(id);
         if(!user){
             return res.status(404).json({message :" User Not Found!"});
@@ -95,8 +95,10 @@ const verifyLogin = async (req,res)=>{
 // For Cars controller
 const addCar = async (req,res) => {
     try{
+        // req.body ( user id + car )
+        const { id, car } = req.body;
         console.log(req.body);
-        const { id } = req.params;
+        // const { id } = req.params;
         const user = await User.findById(id);
         if(!user){
             return res.status(404).json({message :" User Not Found!"});
@@ -104,7 +106,7 @@ const addCar = async (req,res) => {
         if(!user.cars) {
             user.cars = [];
         }
-        user.cars.push(req.body);
+        user.cars.push(car);
         await user.save();
         console.log("New Car Added!");
         res.status(200).json({user});
@@ -115,7 +117,7 @@ const addCar = async (req,res) => {
 };
 const getCars = async (req,res) => {
     try{
-        const { id } = req.params;
+        const { id } = req.body;
         const user = await User.findById(id);
         if(!user){
             return res.status(404).json({message :" User Not Found!"});
@@ -130,7 +132,7 @@ const getCars = async (req,res) => {
 
 const getCarById = async (req,res) => {
     try{
-        const { id, carId } = req.params;
+        const { id, carId } = req.body;
         const user = await User.findById(id);
         if(!user){
             return res.status(404).json({message :" User Not Found!"});
@@ -150,7 +152,7 @@ const getCarById = async (req,res) => {
 
 const  updateCar = async (req,res) => {
     try{
-        const { id, carId } = req.params;
+        const { id, carId } = req.body;
         const user = await User.findById(id);
         if(!user){
             return res.status(404).json({message :" User Not Found!"});
@@ -171,7 +173,7 @@ const  updateCar = async (req,res) => {
 
 const getParts = async (req, res) => {
     try{
-        const { id ,carId } = req.params;
+        const { id ,carId } = req.body;
         const user = await User.findById(id);
         if(!user){
             return res.status(404).json({message :" User Not Found!"});
@@ -190,8 +192,7 @@ const getParts = async (req, res) => {
 
 const addPart = async (req, res) => {
     try{
-        const { id ,carId } = req.params;
-        const newPart = req.body;
+        const { id ,carId ,newPart } = req.body;
         const user = await User.findById(id);
         if(!user){
             return res.status(404).json({message :" User Not Found!"});
@@ -215,7 +216,7 @@ const addPart = async (req, res) => {
 
 const getPartById = async (req, res) => {
     try{
-        const { id, carId, partId } = req.params;
+        const { id, carId, partId } = req.body;
         const user = await User.findById(id);
         if(!user){
             return res.status(404).json({message :" User Not Found!"});
@@ -238,7 +239,7 @@ const getPartById = async (req, res) => {
 
 const updatePart = async (req, res) => {
     try{
-        const { id, carId, partId } = req.params;
+        const { id, carId, partId } = req.body;
         const user = await User.findById(id);
         if(!user){
             return res.status(404).json({message :" User Not Found!"});
