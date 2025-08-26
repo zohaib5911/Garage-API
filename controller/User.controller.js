@@ -263,23 +263,6 @@ const updatePart = async (req, res) => {
 };
 
 
-const searchUser = async (req,res)=>{
-    try{
-        if(!req.body){
-            return res.status(404).json({message :" ID is required!"});
-        }
-        const { id  } = req.body;
-        const user = await User.findById(id);
-        if(!user){
-            return res.status(404).json({message :" User Not Found!"});
-        }        
-        console.log(id," User Sent!");
-        res.status(200).json({user});
-    }
-    catch(error){
-        res.status(500).json({message : error.message });
-    }
-};
 
 module.exports = {
     deleteUser,
@@ -289,7 +272,6 @@ module.exports = {
     updateUser,
     verifyLogin,
 
-    searchUser,
 
     // car
     addCar,

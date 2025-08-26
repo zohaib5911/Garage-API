@@ -6,22 +6,21 @@ const UserController = require("../controller/User.controller.js");
 // user 
 routes.post("/",UserController.regester);
 routes.get("/",UserController.getAll);
-routes.get("/searchUser", UserController.searchUser);
-routes.get("/:id",UserController.getID);
-routes.put("/:id",UserController.updateUser);
-routes.delete("/:id",UserController.deleteUser);
+routes.get("/search",UserController.getID);
+routes.put("/update",UserController.updateUser);
+routes.delete("/delete",UserController.deleteUser);
 routes.post("/login", UserController.verifyLogin);
 // user car routes
-routes.post("/:id/cars", UserController.addCar);
-routes.get("/:id/cars", UserController.getCars);
-routes.get("/:id/cars/:carId", UserController.getCarById);
-routes.put("/:id/cars/:carId", UserController.updateCar);
+routes.post("/cars", UserController.addCar);
+routes.get("/cars", UserController.getCars);
+routes.get("/cars/search", UserController.getCarById);
+routes.put("/cars/update", UserController.updateCar);
 // routes.delete("/:id/cars/:carId", UserController.deleteCar);
 // PARTS  VIEW 
-routes.get("/:id/cars/:carId/parts", UserController.getParts);
-routes.post("/:id/cars/:carId/parts", UserController.addPart);
-routes.get("/:id/cars/:carId/parts/:partId", UserController.getPartById);
-routes.put("/:id/cars/:carId/parts/:partId", UserController.updatePart);
+routes.get("/cars/parts", UserController.getParts);
+routes.post("/cars/parts", UserController.addPart);
+routes.get("/cars/parts/search", UserController.getPartById);
+routes.put("/cars/parts/update", UserController.updatePart);
 // routes.delete("/:id/cars/:carId/parts/:partId", UserController.deletePart);
 
 module.exports = routes;

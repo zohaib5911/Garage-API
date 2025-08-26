@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const userRoutes = require("./routes/User.routes.js");
 const partsRoutes = require("./routes/Parts.routes.js");
 const carRoutes = require("./routes/Car.routes.js");
+const techRoutes = require("./routes/Tech.routes.js");
+
 
 //  From which port to list the requests 
 app.listen(3000,()=>{
@@ -16,6 +18,7 @@ app.use(express.urlencoded({extended : true}));
 
 // using routes 
 app.use ('/api/user',userRoutes);
+app.use ('/api/tech',techRoutes);
 // app.use('/api/parts', partsRoutes);
 // app.use('/api/cars',carRoutes);
 
