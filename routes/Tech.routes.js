@@ -16,6 +16,6 @@ routes.patch("/updateCarPartStatus",TechController.updateCarPartStatus);  // upd
 
 routes.get("/printAssignedCars/",TechController.printAssignedCars); // print assigned cars
 routes.delete("/deleteDoneCars",TechController.deleteDoneCars); // delete done cars from assigned cars
-routes.put("/updateAvaliablity",TechController.updateAvaliablity); // update tech availability
+routes.put("/updateAvailability",TechController.updateAvailability); // update tech availability
 
 module.exports = routes;

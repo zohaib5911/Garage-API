@@ -9,7 +9,7 @@ const UserShema = mongoose.Schema({
     email:{
         type: String,
         required: [true, "Email is required"],
-        unique: true
+        unique: true,
     },
     password: {
     type: String,
@@ -20,7 +20,8 @@ const UserShema = mongoose.Schema({
             return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v);
         },
         message: props => `Password is not strong enough`
-    }
+    },
+    select : [false , "Fuck Off"]
   }, cars:{
         type: [CarSchema],
         default: [],
