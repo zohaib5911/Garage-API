@@ -5,6 +5,10 @@ const TechnSchema = new mongoose.Schema({
     type: String,
     required: [true,"Tech name is required"]
   },
+  available: {
+    type: Boolean,
+    default: true
+  },
   salary: {
     type: Number,
     required: [true,"Tech salary is required"]

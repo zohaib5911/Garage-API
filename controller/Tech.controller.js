@@ -93,6 +93,22 @@ const assignCar = async (req, res) => {
   }
 };
 
+const updateAvaliablity  = async(techId,avaliable) =>{  
+  try{
+    const {techID,avaliable} = re.body;
+    const tech =  await Tech.findById(techID);
+    if(!tech){return res.status(404).json({"message": "Tech not found"});}
+    else {
+      tech.avaliable = avaliable;
+      await tech.save();
+      console.log("Tech avaliable status updated!");
+      res.status(200).json(tech);
+    }
+  }
+  catch(error){
+      res.status(400).json({"message ": error.message});
+  }
+};  
 
 
 // update the car status 
@@ -116,6 +132,38 @@ const updateCarStatus = async (req,res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+const printAssignedCars = async (req,res)=>{
+  try{
+    const { techId } = req.body;
+    const tech = await Tech.findById(techId).populate("assignedCars.userId").populate("assignedCars.carId");
+    if (!tech) return res.status(404).json({ message: "Tech not found" });
+    res.status(200).json(tech.assignedCars);
+  }
+  catch(error){
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const deleteDoneCars = async (req,res) =>{
+  try{
+    const { techId } = req.body;
+    const tech = await Tech.findById(techId);
+    if (!tech) return res.status(404).json({ message: "Tech not found" });
+
+    tech.assignedCars = tech.assignedCars.filter(car => car.status !== "done");
+    
+    await tech.save();
+
+    res.status(200).json({ message: "Done Cars are Removed!" });
+  }
+  catch(error){
+    res.status(400).json({ message: error.message });
+  }
+
+};
+
+
 
 
 // updating tha parts status 
@@ -149,5 +197,8 @@ module.exports = {
     deleteTech,
     assignCar,
     updateCarStatus,
-    updateCarPartStatus
+    updateCarPartStatus,
+    printAssignedCars,
+    deleteDoneCars,
+    updateAvaliablity
 };

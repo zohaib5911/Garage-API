@@ -16,12 +16,13 @@ const CarSchema = new mongoose.Schema({
     },
     carStatus: {
         type: String,
-        default: "Pending"
+        default: "Pending",
+        enum: ["Pending", "In Progress", "Done"]
     },
     parts: {
-        type : [PartSchema],
-        required : false,
-        default : []
+        type: [PartSchema],
+        required: false,
+        default: []
      }
 }, {
     timestamps: true,
