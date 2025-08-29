@@ -165,26 +165,62 @@ const printAssignedCars = async (req, res) => {
 
 const deleteDoneCars = async (req, res) => {
   try {
-    const { techId } = req.body;
-    const tech = await Tech.findById(techId).populate("assignedCars");
-    if (!tech) return res.status(404).json({ message: "Tech not found" });
+    const { techID } = req.body;
 
-    // Find the cars with status "Done"
-    const doneCars = tech.assignedCars.filter(car => car.status === "Done");
-    const doneCarIds = doneCars.map(car => car._id);
+    // Find technician
+    const tech = await Tech.findById(techID);
+    if (!tech) {
+      return res.status(404).json({ message: "Tech not found" });
+    }
 
-    // Remove those cars from the tech.assignedCars array
-    tech.assignedCars = tech.assignedCars.filter(car => car.status !== "Done");
+    let updatedAssignedCars = [];
+
+    // Group assignedCars by userId
+    const carsByUser = {};
+    for (let assigned of tech.assignedCars) {
+      if (!carsByUser[assigned.userId]) carsByUser[assigned.userId] = [];
+      carsByUser[assigned.userId].push(assigned.carId);
+    }
+
+    // Check each user’s cars
+    for (let userId of Object.keys(carsByUser)) {
+      const user = await User.findById(userId);
+      if (!user) continue;
+
+      const carIds = carsByUser[userId];
+      let keepCarIds = [];
+
+      for (let carId of carIds) {
+        const car = user.cars.id(carId);
+        if (car && car.carStatus !== "Done") {
+          // keep only cars not done
+          keepCarIds.push(carId);
+        }
+      }
+
+      // If some cars of this user are still not done → keep them in tech
+      if (keepCarIds.length > 0) {
+        for (let carId of keepCarIds) {
+          updatedAssignedCars.push({ userId, carId });
+        }
+      }
+      // else → remove this user completely (skip adding)
+    }
+
+    // Update tech.assignedCars
+    tech.assignedCars = updatedAssignedCars;
     await tech.save();
 
-    // Delete the actual Car documents from DB
-    await Car.deleteMany({ _id: { $in: doneCarIds } });
+    res.status(200).json({
+      message: "Done cars and users with all done cars removed successfully",
+      remainingAssignedCars: tech.assignedCars
+    });
 
-    res.status(200).json({ message: "Done cars removed and deleted!" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
+
 
 
 
