@@ -5,21 +5,23 @@ const TechnSchema = new mongoose.Schema({
     type: String,
     required: [true,"Tech name is required"]
   },
-  // email : {
-  //   type : String,
-  //   required: [true,"Tech email is required"],
-  //   unique: [true ,"Email Already Used "]
-  // },
-  //  password: {
-  //   type: String,
-  //   required: [true, "Password is required"],
-  //   minlength: [8, "Password must be at least 8 characters long"],
-  //   validate: {
-  //       validator: function(v) {
-  //           return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v);
-  //       },
-  //       message: props => `Password is not strong enough`
-  // },
+  email : {
+    type : String,
+    required: [true,"Tech email is required"],
+    unique: [true ,"Email Already Used "]
+  },
+   password: {
+    type: String,
+    required: [true, "Password is required"],
+    minlength: [8, "Password must be at least 8 characters long"],
+    select : [false,"Can not get the password "],
+    validate: {
+        validator: function(v) {
+            return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v);
+        },
+        message: props => `Password is not strong enough`
+  }
+  },
 
   available: {
     type: Boolean,

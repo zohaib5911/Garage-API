@@ -249,6 +249,26 @@ const updateCarPartStatus = async (req,res) => {
     }
 };
 
+const verifyLogin = async (req,res)=>{
+    try{
+        const {email , password} = req.body;
+        const tech = await Tech.findOne({email});
+        if(!tech){
+            return res.status(404).json({message :" Tech Not Found!"});
+        }
+        if(!tech.email || !tech.password){
+            return res.status(400).json({message: "Email and Password are required for login."});
+        }
+        if(tech.email !== email || tech.password !== password){
+            return res.status(401).json({message: "Invalid email or password."});
+        }
+        console.log(tech.id,"Tech Login!");
+        res.status(200).json({message : "Login Successfully!"});
+    }
+    catch(error){
+        res.status(500).json({message : error.message });
+    }
+};
 
 module.exports = {
     createTech,
@@ -261,6 +281,7 @@ module.exports = {
     updateCarPartStatus,
     printAssignedCars,
     deleteDoneCars,
-    updateAvailability
+    updateAvailability,
+    verifyLogin
 
 };

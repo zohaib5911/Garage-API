@@ -15,6 +15,7 @@ routes.post("/cars", UserController.addCar);
 routes.get("/cars", UserController.getCars);
 routes.get("/cars/search", UserController.getCarById);
 routes.put("/cars/update", UserController.updateCar);
+routes.get("/cars/done", UserController.doneCars);
 // routes.delete("/:id/cars/:carId", UserController.deleteCar);
 // PARTS  VIEW 
 routes.get("/cars/parts", UserController.getParts);

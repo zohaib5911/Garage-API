@@ -9,6 +9,7 @@ routes.get("/", TechController.getAllTechs);
 routes.get("/search", TechController.searchTech);
 routes.put("/update", TechController.updateTech);
 routes.delete("/delete", TechController.deleteTech);
+routes.post("/login", TechController.verifyLogin); // tech login
 
 routes.post("/assignCar", TechController.assignCar);          // assign car
 routes.put("/updateCarStatus",TechController.updateCarStatus);      // update car status

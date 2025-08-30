@@ -263,7 +263,21 @@ const updatePart = async (req, res) => {
 };
 
 
-
+const doneCars = async (req,res) => {
+    try{
+        const { id } = req.body;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message :" User Not Found!"});
+        }
+        const doneCars = user.cars.filter(car => car.carStatus === "Done");
+        console.log("Done Cars Sent!");
+        res.status(200).json({doneCars});
+    }
+    catch(error){
+        res.status(500).json({message : error.message });
+    }
+};   
 module.exports = {
     deleteUser,
     regester,
@@ -281,5 +295,6 @@ module.exports = {
     getParts,
     addPart,
     getPartById,
-    updatePart
+    updatePart,
+    doneCars
 };
