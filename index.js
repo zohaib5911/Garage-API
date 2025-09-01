@@ -28,12 +28,11 @@ app.get('/',(req,res)=>{
 
 
 // connecting to the database
-mongoose.connect('mongodb+srv://bscs23098:wTLvYa8zIHQefm1i@cluster0.yodbzkh.mongodb.net/Node-API?retryWrites=true&w=majority&appName=Cluster0')
-.then(()=>{
-    console.log('MongoDB connected successfully');
-    console.log('Server is running on port 3000');
-
-})
-.catch((error)=>{
-    console.error('MongoDB connection error:', error);
-});
+mongoose.connect("mongodb://localhost:27017/GarageBackend")
+  .then(() => {
+    console.log('✅ MongoDB connected successfully');
+    console.log('🚀 Server is running on port 3000');
+  })
+  .catch((error) => {
+    console.error('❌ MongoDB connection error:', error);
+  });
